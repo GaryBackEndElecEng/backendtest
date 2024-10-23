@@ -1,0 +1,14 @@
+{
+  "resourceName": "backendbucket",
+  "policyUUID": "d9ab1b10",
+  "bucketName": "backendbuckettest",
+  "storageAccess": "authAndGuest",
+  "guestAccess": [
+    "READ"
+  ],
+  "authAccess": [
+    "READ"
+  ],
+  "triggerFunction": "NONE",
+  "groupAccess": {}
+}
