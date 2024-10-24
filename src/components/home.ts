@@ -14,6 +14,7 @@ class Home{
         container.id="home-main";
         container.style.cssText="display:grid;place-items:center;padding:4rem;min-height:30vh;width:100%;";
         parent.appendChild(container);
+        this.blogs({parent});
         this._service.getPosts().then(async(res)=>{
             if(res){
                 const row=document.createElement("div");
@@ -41,7 +42,6 @@ class Home{
                 });
             }
         });
-        this.blogs({parent});
     }
     blogs(item:{parent:HTMLElement}){
         const {parent}=item;

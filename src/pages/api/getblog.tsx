@@ -1,9 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { NextApiRequest, NextApiResponse } from "next";
-import { blogType, selectorType, element_selType, elementType, codeType, rowType, colType, chartType } from "@/components/Types";
+import { blogType } from "@/components/Types";
 import { getErrorMessage } from "@/lib/errorBoundaries";
-import "@aws-sdk/signature-v4-crt";
-import { findCountKeys } from "@/lib/ultils/functions";
 
 const prisma = new PrismaClient();
 
@@ -13,16 +11,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const { id } = req.query as { id: string };
         //-------------( GETS ALL BLOGS ) -------------//
         if (id) {
-            const blog = await prisma.blog.findUnique({
-                where: {
-                    id: parseInt(id) as number
+            try {
+
+                const blog = await prisma.blog.findUnique({
+                    where: {
+                        id: parseInt(id) as number
+                    }
+                });
+                if (blog) {
+                    res.status(200).json(blog);
+                } else {
+                    res.status(400).json({ msg: "could not find blog" })
                 }
-            });
-            if (blog) {
-                res.status(200).json(blog);
+            } catch (error) {
+                res.status(400).json({ msg: "server issues" })
+            } finally {
                 return await prisma.$disconnect();
-            } else {
-                res.status(200).json({ msg: "could not find blog" })
             }
         } else {
 
@@ -30,14 +34,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 const blogs = await prisma.blog.findMany({
                     where: { show: true },
                 }) as unknown[] as blogType[];
-                // const blogsWithImgs = await getUserBlogsImgs(blogs);
-                res.status(200).json(blogs)
-                return await prisma.$disconnect();
+                if (blogs) {
+                    res.status(200).json(blogs);
+                } else {
+                    res.status(400).json({ msg: "could not get" })
+                }
             } catch (error) {
                 const msg = getErrorMessage(error);
-                console.log("error: ", msg)
+                console.log("error: ", `${msg}- ERROR HERE`)
                 res.status(400).json({ message: msg })
-                return await prisma.$disconnect();
             } finally {
                 return await prisma.$disconnect();
             }
