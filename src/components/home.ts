@@ -1,4 +1,5 @@
 import Service from "./service";
+import { blogType } from "./Types";
 
 
 class Home{
@@ -40,7 +41,49 @@ class Home{
                 });
             }
         });
+        this.blogs({parent});
     }
+    blogs(item:{parent:HTMLElement}){
+        const {parent}=item;
+        const container=document.createElement("div");
+        container.id="blogs-container";
+        container.style.cssText="width:100%;min-height:5vh;padding:1rem;";
+        const row=document.createElement("div");
+        row.className="row";
+        container.appendChild(row);
+        this._service.savegetblogs().then(async(res)=>{
+            if(res){
+                const blogs=res as blogType[];
+                blogs.map(blog=>{
+                    if(blog){
+
+                        const col=document.createElement("div");
+                        col.id="col" + blog.id;
+                        col.style.cssText="margin-inline:auto;flex:0 0 25%";
+                        col.className="col-md-4";
+                        const title=document.createElement("h6");
+                        title.id="title" + blog.id;
+                        title.textContent=blog.title ? blog.title:"blog.title"
+                        const para1=document.createElement("p");
+                        para1.id="para1"+ blog.id;
+                        para1.textContent=blog.desc ? blog.desc :" blog.desc";
+                        const para2=document.createElement("p");
+                        para2.id="para2"+ blog.id;
+                        para2.textContent=blog.date ? JSON.stringify(blog.date):" date";
+                        const para3=document.createElement("p");
+                        para3.id="para3"+blog.id;
+                        para3.textContent=JSON.stringify(blog.elements);
+                        col.appendChild(title);
+                        col.appendChild(para1);
+                        col.appendChild(para2);
+                        col.appendChild(para3);
+                        row.appendChild(col);
+                    }
+                });
+            }
+        });
+        parent.appendChild(container);
+    };
     cleanUp(item:{parent:HTMLElement}){
         const {parent}=item;
         while(parent.firstChild as ChildNode){
