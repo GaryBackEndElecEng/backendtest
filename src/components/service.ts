@@ -4,10 +4,10 @@ import { blogType, postType } from "./Types";
 
 class Service{
     postsUrl:string;
-    savegetblog:string;
+    getblog:string;
     constructor(){
         this.postsUrl="/api/posts";
-        this.savegetblog="/api/savegetblog";
+        this.getblog="/api/getblog";
     }
     getPosts():Promise<postType[]|void>{
         const option={
@@ -22,14 +22,27 @@ class Service{
             }
         }).catch((err)=>{const msg=getErrorMessage(err);console.error(msg)});
     }
-   async savegetblogs():Promise<blogType[]|void>{
+   async getblogs():Promise<blogType[]|void>{
         const option={
             headers:{"Content-Type":"application/json"},
             method:"GET"
         }
-        return fetch(this.savegetblog,option).then(async(res)=>{
+        return fetch(this.getblog,option).then(async(res)=>{
             if(res.ok){
                 const body = await res.json() as blogType[];
+                return body;
+            }
+        });
+    }
+   async getBlog(item:{id:number}):Promise<blogType|void>{
+    const {id}=item;
+        const option={
+            headers:{"Content-Type":"application/json"},
+            method:"GET"
+        }
+        return fetch(`${this.getblog}?id=${id}`,option).then(async(res)=>{
+            if(res.ok){
+                const body = await res.json() as blogType;
                 return body;
             }
         });

@@ -51,7 +51,7 @@ class Home{
         const row=document.createElement("div");
         row.className="row";
         container.appendChild(row);
-        this._service.savegetblogs().then(async(res)=>{
+        this._service.getblogs().then(async(res)=>{
             if(res){
                 const blogs=res as blogType[];
                 blogs.map(blog=>{
